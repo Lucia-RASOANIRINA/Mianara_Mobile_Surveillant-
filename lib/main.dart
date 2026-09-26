@@ -4,7 +4,7 @@ import 'package:workmanager/workmanager.dart';
 
 import 'data/app_database.dart';
 import 'data/sync_service.dart';
-import 'ui/root_gate.dart';
+import 'ui/app_shell.dart';
 import 'ui/theme.dart';
 
 const _syncTask = 'com.example.mianaraMobile.background.sync';
@@ -48,7 +48,7 @@ class MianaraApp extends StatelessWidget {
       theme: MianaraTheme.light,
       darkTheme: MianaraTheme.dark,
       themeMode: ThemeMode.system,
-      home: const RootGate(),
+      home: const AppShell(),
     );
   }
 }

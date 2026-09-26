@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../data/app_database.dart';
-import '../data/auth_service.dart';
 import '../models/candidate.dart';
 import 'app_language.dart';
 import 'screens/assistant_screen.dart';
@@ -12,13 +11,9 @@ import 'screens/profile_screen.dart';
 import 'widgets/mianara_app_bar.dart';
 import 'widgets/mianara_nav_bar.dart';
 
-/// Espace candidat, accessible uniquement une fois connecté (voir
-/// `RootGate`). Rien ici ne devrait pouvoir s'afficher sans une session
-/// active — c'est `RootGate` qui en est le garant, pas cet écran.
+/// Espace Bac. La connexion candidat est gérée depuis l'écran Profil.
 class AppShell extends StatefulWidget {
-  const AppShell({required this.onLoggedOut, super.key});
-
-  final VoidCallback onLoggedOut;
+  const AppShell({super.key});
 
   @override
   State<AppShell> createState() => _AppShellState();
@@ -58,11 +53,6 @@ class _AppShellState extends State<AppShell> {
     setState(() => _candidate = candidate);
   }
 
-  Future<void> _logout() async {
-    await AuthService.instance.logout();
-    widget.onLoggedOut();
-  }
-
   @override
   Widget build(BuildContext context) {
     final pages = [
@@ -75,43 +65,15 @@ class _AppShellState extends State<AppShell> {
       AssistantScreen(candidate: _candidate),
       DossierScreen(candidate: _candidate, onRefresh: _refresh),
       LearningScreen(onRefresh: _refresh),
-      ProfileScreen(onSaved: _refresh, onLogout: _logout),
+      ProfileScreen(onSaved: _refresh),
     ];
-
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return AppLanguageScope(
       language: _language,
       child: Scaffold(
-        appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(_appBarHeight + 4),
-          child: Column(
-            children: [
-              Expanded(
-                child: AppBar(
-                  toolbarHeight: _appBarHeight,
-                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                  surfaceTintColor: Colors.transparent,
-                  titleSpacing: 20,
-                  title: Image.asset(
-                    isDark
-                        ? 'assets/branding/mianara-logo-horizontal-negatif.png'
-                        : 'assets/branding/mianara-logo-horizontal.png',
-                    width: 126,
-                    height: 36,
-                    alignment: Alignment.centerLeft,
-                    fit: BoxFit.contain,
-                    semanticLabel: 'Mianara',
-                  ),
-                  actions: [
-                    _LanguageFlags(language: _language, onSelect: _setLanguage),
-                    const SizedBox(width: 20),
-                  ],
-                ),
-              ),
-              LambaStripe(height: isDark ? 3 : 4),
-            ],
-          ),
+        appBar: MianaraAppBar(
+          language: _language,
+          onSelectLanguage: _setLanguage,
         ),
         body: SafeArea(child: pages[_selectedIndex]),
         bottomNavigationBar: MianaraNavBar(
@@ -157,81 +119,6 @@ class _AppShellState extends State<AppShell> {
                   : 'Profil',
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-const _appBarHeight = 68.0;
-
-class _LanguageFlags extends StatelessWidget {
-  const _LanguageFlags({required this.language, required this.onSelect});
-
-  final AppLanguage language;
-  final ValueChanged<AppLanguage> onSelect;
-
-  @override
-  Widget build(BuildContext context) => Row(
-    mainAxisSize: MainAxisSize.min,
-    children: [
-      _FlagButton(
-        flag: '🇲🇬',
-        tooltip: 'Malagasy',
-        active: language == AppLanguage.malagasy,
-        onTap: () => onSelect(AppLanguage.malagasy),
-      ),
-      const SizedBox(width: 6),
-      _FlagButton(
-        flag: '🇫🇷',
-        tooltip: 'Français',
-        active: language == AppLanguage.french,
-        onTap: () => onSelect(AppLanguage.french),
-      ),
-    ],
-  );
-}
-
-class _FlagButton extends StatelessWidget {
-  const _FlagButton({
-    required this.flag,
-    required this.tooltip,
-    required this.active,
-    required this.onTap,
-  });
-
-  final String flag;
-  final String tooltip;
-  final bool active;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final green = Theme.of(context).colorScheme.primary;
-    return Tooltip(
-      message: tooltip,
-      child: GestureDetector(
-        onTap: onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          curve: Curves.easeOut,
-          width: active ? 34 : 28,
-          height: active ? 34 : 28,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(
-              color: active
-                  ? green
-                  : MianaraColors.lineStrong.withValues(alpha: 0.35),
-              width: active ? 2 : 1,
-            ),
-          ),
-          child: AnimatedOpacity(
-            duration: const Duration(milliseconds: 200),
-            opacity: active ? 1 : 0.45,
-            child: Text(flag, style: TextStyle(fontSize: active ? 16 : 13)),
-          ),
         ),
       ),
     );

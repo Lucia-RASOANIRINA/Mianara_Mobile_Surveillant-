@@ -11,7 +11,6 @@ class ProfileScreen extends StatefulWidget {
   const ProfileScreen({required this.onSaved, super.key});
 
   final Future<void> Function() onSaved;
-  final Future<void> Function() onLogout;
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();

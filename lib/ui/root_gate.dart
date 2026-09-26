@@ -81,7 +81,7 @@ class _RootGateState extends State<RootGate> {
       case _GateState.visitor:
         return VisitorShell(onLoggedIn: _onLoggedIn);
       case _GateState.candidate:
-        return AppShell(onLoggedOut: _onLoggedOut);
+        return const AppShell();
       case _GateState.otherRole:
         return StaffPlaceholderScreen(
           role: _role,

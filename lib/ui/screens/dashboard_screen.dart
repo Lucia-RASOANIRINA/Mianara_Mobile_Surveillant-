@@ -198,14 +198,8 @@ class DashboardScreen extends StatelessWidget {
                         subtitle: _formatDate(session['ended_at']! as String),
                         onTap: () {},
                       ),
-                      subtitle: _formatDate(
-                        entry.value['ended_at']! as String,
-                      ),
-                      onTap: () {},
                     ),
                   ),
-                ),
-              ),
           ],
         ),
       );
