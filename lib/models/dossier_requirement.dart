@@ -10,7 +10,7 @@ class DossierRequirement {
 List<DossierRequirement> requirementsFor(Candidate candidate) {
   final matchesDocumentedExample =
       candidate.examType == 'Baccalauréat' &&
-      candidate.examSeries == 'C' &&
+      candidate.examSeries == 'S' &&
       candidate.examCenter.toLowerCase().contains('fianarantsoa') &&
       candidate.candidateStatus == 'Scolaire' &&
       candidate.firstParticipation;

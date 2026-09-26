@@ -19,7 +19,6 @@ class CandidateForm extends StatefulWidget {
 class _CandidateFormState extends State<CandidateForm> {
   final _formKey = GlobalKey<FormState>();
   final _controllers = <String, TextEditingController>{};
-  String _examType = 'Baccalauréat';
   String _series = 'S';
   String _status = 'Scolaire';
   String _gender = '';
@@ -70,10 +69,7 @@ class _CandidateFormState extends State<CandidateForm> {
       _controllers['birthCertificateNumber']!.text =
           candidate.birthCertificateNumber;
       _controllers['examCenter']!.text = candidate.examCenter;
-      _examType = candidate.examType;
-      _series = ['L', 'S', 'OSE'].contains(candidate.examSeries)
-          ? candidate.examSeries
-          : 'S';
+      _series = Candidate.canonicalSeries(candidate.examSeries);
       _status = candidate.candidateStatus;
       _gender = candidate.gender;
       _language = candidate.preferredLanguage;
@@ -106,8 +102,8 @@ class _CandidateFormState extends State<CandidateForm> {
           email: _controllers['email']!.text.trim(),
           birthCertificateNumber: _controllers['birthCertificateNumber']!.text
               .trim(),
-          examType: _examType,
-          examSeries: _examType == 'Baccalauréat' ? _series : '',
+          examType: 'Baccalauréat',
+          examSeries: _series,
           examCenter: _controllers['examCenter']!.text.trim(),
           candidateStatus: _status,
           firstParticipation: _firstParticipation,
@@ -186,8 +182,7 @@ class _CandidateFormState extends State<CandidateForm> {
             tintSoft: MianaraColors.redSoft,
             title: appText(context, 'Examen', 'Fanadinana'),
             children: [
-              DropdownButtonFormField<String>(
-                initialValue: _examType,
+              InputDecorator(
                 decoration: InputDecoration(
                   labelText: appText(
                     context,
@@ -195,44 +190,88 @@ class _CandidateFormState extends State<CandidateForm> {
                     'Fanadinam-pirenena',
                   ),
                 ),
+                child: Text(
+                  appText(context, 'Baccalauréat', 'Bakalaorea'),
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+              ),
+              const SizedBox(height: 12),
+              DropdownButtonFormField<String>(
+                initialValue: _series,
+                decoration: InputDecoration(
+                  labelText: appText(
+                    context,
+                    'Série du Baccalauréat',
+                    'Sokajin’ny bakalorea',
+                  ),
+                ),
                 items: [
-                  DropdownMenuItem(value: 'CEPE', child: Text('CEPE')),
-                  DropdownMenuItem(value: 'BEPC', child: Text('BEPC')),
                   DropdownMenuItem(
-                    value: 'Baccalauréat',
+                    value: 'L',
                     child: Text(
-                      appText(context, 'Baccalauréat', 'Bakalaorea'),
+                      appText(context, 'Littéraire · L', 'Literatiora · L'),
+                    ),
+                  ),
+                  DropdownMenuItem(
+                    value: 'S',
+                    child: Text(
+                      appText(context, 'Scientifique · S', 'Siantifika · S'),
+                    ),
+                  ),
+                  DropdownMenuItem(
+                    value: 'OSE',
+                    child: Text(
+                      appText(
+                        context,
+                        'Économie et société · OSE',
+                        'Toekarena sy fiarahamonina · OSE',
+                      ),
+                    ),
+                  ),
+                  DropdownMenuItem(
+                    value: 'TI',
+                    child: Text(
+                      appText(
+                        context,
+                        'Bac technique · Industriel (TI)',
+                        'Bac teknika · Indostrialy (TI)',
+                      ),
+                    ),
+                  ),
+                  DropdownMenuItem(
+                    value: 'TGC',
+                    child: Text(
+                      appText(
+                        context,
+                        'Bac technique · Génie civil (TGC)',
+                        'Bac teknika · Fanorenana (TGC)',
+                      ),
+                    ),
+                  ),
+                  DropdownMenuItem(
+                    value: 'TT',
+                    child: Text(
+                      appText(
+                        context,
+                        'Bac technique · Tertiaire (TT)',
+                        'Bac teknika · Fitantanana (TT)',
+                      ),
+                    ),
+                  ),
+                  DropdownMenuItem(
+                    value: 'TA',
+                    child: Text(
+                      appText(
+                        context,
+                        'Bac technique · Agricole (TA)',
+                        'Bac teknika · Fambolena (TA)',
+                      ),
                     ),
                   ),
                 ],
                 onChanged: (value) =>
-                    setState(() => _examType = value ?? _examType),
+                    setState(() => _series = value ?? _series),
               ),
-              if (_examType == 'Baccalauréat') ...[
-                const SizedBox(height: 12),
-                DropdownButtonFormField<String>(
-                  initialValue: _series,
-                  decoration: InputDecoration(
-                    labelText: appText(context, 'Série', 'Sokajy'),
-                  ),
-                  items: const [
-                    DropdownMenuItem(
-                      value: 'L',
-                      child: Text('L — Littéraire'),
-                    ),
-                    DropdownMenuItem(
-                      value: 'S',
-                      child: Text('S — Scientifique'),
-                    ),
-                    DropdownMenuItem(
-                      value: 'OSE',
-                      child: Text('OSE — Organisation, Société et Économie'),
-                    ),
-                  ],
-                  onChanged: (value) =>
-                      setState(() => _series = value ?? _series),
-                ),
-              ],
               const SizedBox(height: 12),
               DropdownButtonFormField<String>(
                 initialValue: _status,

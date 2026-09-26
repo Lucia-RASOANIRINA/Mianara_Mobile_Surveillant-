@@ -10,7 +10,7 @@ class Candidate {
     this.email = '',
     this.birthCertificateNumber = '',
     this.examType = 'Baccalauréat',
-    this.examSeries = 'C',
+    this.examSeries = 'S',
     this.examCenter = '',
     this.candidateStatus = 'Scolaire',
     this.firstParticipation = true,
@@ -34,6 +34,20 @@ class Candidate {
   final String preferredLanguage;
 
   String get fullName => '$firstName $lastName'.trim();
+
+  static String canonicalSeries(String series) =>
+      switch (series.trim().toUpperCase()) {
+        'A' || 'A1' || 'A2' => 'L',
+        'C' || 'D' => 'S',
+        'L' ||
+        'S' ||
+        'OSE' ||
+        'TI' ||
+        'TGC' ||
+        'TT' ||
+        'TA' => series.trim().toUpperCase(),
+        _ => 'S',
+      };
 
   Map<String, Object?> toMap() => {
     'id': 1,
@@ -64,8 +78,8 @@ class Candidate {
     phone: map['phone'] as String? ?? '',
     email: map['email'] as String? ?? '',
     birthCertificateNumber: map['birth_certificate_number'] as String? ?? '',
-    examType: map['exam_type'] as String? ?? 'Baccalauréat',
-    examSeries: map['exam_series'] as String? ?? 'C',
+    examType: 'Baccalauréat',
+    examSeries: canonicalSeries(map['exam_series'] as String? ?? 'S'),
     examCenter: map['exam_center'] as String? ?? '',
     candidateStatus: map['candidate_status'] as String? ?? 'Scolaire',
     firstParticipation: (map['first_participation'] as int? ?? 1) == 1,

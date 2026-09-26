@@ -1,31 +1,28 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../../data/app_database.dart';
 import '../app_language.dart';
 import '../theme.dart';
-
-const _subjects = [
-  'Mathématiques',
-  'Physique',
-  'Français',
-  'Histoire',
-  'Géographie',
-];
+import '../widgets/learning_content_section.dart';
 
 const _subjectIcons = {
-  'Mathématiques': Icons.functions_rounded,
-  'Physique': Icons.science_rounded,
-  'Français': Icons.menu_book_rounded,
-  'Histoire': Icons.hourglass_bottom_rounded,
-  'Géographie': Icons.public_rounded,
+  'MATH': Icons.functions_rounded,
+  'PC': Icons.science_rounded,
+  'SVT': Icons.eco_rounded,
+  'FRA': Icons.menu_book_rounded,
+  'HG': Icons.public_rounded,
+  'SES': Icons.insights_rounded,
 };
 
 const _subjectColors = {
-  'Mathématiques': MianaraColors.green,
-  'Physique': MianaraColors.info,
-  'Français': MianaraColors.red,
-  'Histoire': MianaraColors.warning,
-  'Géographie': MianaraColors.sun,
+  'MATH': MianaraColors.green,
+  'PC': MianaraColors.info,
+  'SVT': MianaraColors.green,
+  'FRA': MianaraColors.red,
+  'HG': MianaraColors.warning,
+  'SES': MianaraColors.sun,
 };
 
 class LearningScreen extends StatefulWidget {
@@ -38,16 +35,70 @@ class LearningScreen extends StatefulWidget {
 }
 
 class _LearningScreenState extends State<LearningScreen> {
-  String _selectedSubject = _subjects.first;
+  String? _selectedSubjectCode;
+  String _selectedSubjectFrench = '';
+  String _selectedSubjectMalagasy = '';
   bool _saving = false;
+  DateTime? _startedAt;
+  Duration _elapsed = Duration.zero;
+  Timer? _timer;
+  late Future<List<Map<String, Object?>>> _sessions;
+  late Future<List<Map<String, Object?>>> _subjectCatalog;
+
+  @override
+  void initState() {
+    super.initState();
+    _sessions = AppDatabase.instance.loadRevisionSessions();
+    _subjectCatalog = AppDatabase.instance.loadMobileSubjects();
+  }
+
+  @override
+  void didUpdateWidget(covariant LearningScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _subjectCatalog = AppDatabase.instance.loadMobileSubjects();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  void _startSession() {
+    final startedAt = DateTime.now();
+    setState(() {
+      _startedAt = startedAt;
+      _elapsed = Duration.zero;
+    });
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (!mounted) return;
+      setState(() => _elapsed = DateTime.now().difference(startedAt));
+    });
+  }
 
   Future<void> _saveSession() async {
+    final startedAt = _startedAt;
+    final subjectCode = _selectedSubjectCode;
+    if (startedAt == null || subjectCode == null) return;
+    final endedAt = DateTime.now();
+    _timer?.cancel();
     setState(() => _saving = true);
     try {
-      await AppDatabase.instance.addRevisionSession(_selectedSubject);
+      await AppDatabase.instance.addRevisionSession(
+        subjectCode,
+        startedAt: startedAt,
+        endedAt: endedAt,
+      );
+      _sessions = AppDatabase.instance.loadRevisionSessions();
       await widget.onRefresh();
     } finally {
-      if (mounted) setState(() => _saving = false);
+      if (mounted) {
+        setState(() {
+          _saving = false;
+          _startedAt = null;
+          _elapsed = Duration.zero;
+        });
+      }
     }
 
     if (!mounted) return;
@@ -80,44 +131,80 @@ class _LearningScreenState extends State<LearningScreen> {
       Text(
         appText(
           context,
-          'Cours, exercices et annales seront disponibles hors ligne après leur synchronisation.',
-          'Ho azo ampiasaina tsy misy Internet ny lesona, fanazaran-tena ary laza adina rehefa vita ny fampifandraisana.',
+          'Apprends une notion, entraîne-toi et avance chaque jour vers ton Baccalauréat.',
+          'Mianara, manaova fanazarana ary mandrosoa isan’andro hanatratra ny Bakalaorea.',
         ),
         style: Theme.of(context).textTheme.bodyMedium,
       ),
       const SizedBox(height: 18),
-      Card(
-        child: Padding(
-          padding: const EdgeInsets.all(18),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: MianaraColors.infoSoft,
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                child: const Icon(
-                  Icons.download_for_offline_rounded,
-                  color: MianaraColors.info,
-                ),
-              ),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Text(
-                  appText(
-                    context,
-                    'Aucun contenu pédagogique n’est installé pour le moment. Le catalogue sera alimenté à partir des cours et annales officiels.',
-                    'Mbola tsy misy lesona napetraka. Hofenoina amin’ny lesona sy laza adina ofisialy ny tahiry.',
+      FutureBuilder<List<Map<String, Object?>>>(
+        future: _sessions,
+        builder: (context, snapshot) {
+          final now = DateTime.now();
+          final weekStart = DateTime(
+            now.year,
+            now.month,
+            now.day,
+          ).subtract(Duration(days: now.weekday - 1));
+          final weeklySessions =
+              snapshot.data
+                  ?.where(
+                    (session) =>
+                        DateTime.parse(session['ended_at']! as String)
+                            .isAfter(weekStart),
+                  )
+                  .length ??
+              0;
+          return Card(
+            child: Padding(
+              padding: const EdgeInsets.all(18),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.local_fire_department_rounded,
+                        color: MianaraColors.sun,
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          appText(
+                            context,
+                            'Mon objectif cette semaine',
+                            'Tanjoko amin’ity herinandro ity',
+                          ),
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                      ),
+                    ],
                   ),
-                  style: const TextStyle(height: 1.45),
-                ),
+                  const SizedBox(height: 12),
+                  LinearProgressIndicator(
+                    value: (weeklySessions / 3).clamp(0, 1).toDouble(),
+                    minHeight: 8,
+                    borderRadius: BorderRadius.circular(8),
+                    backgroundColor: MianaraColors.greenSoft,
+                    color: MianaraColors.green,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    appText(
+                      context,
+                      '$weeklySessions/3 séances de révision cette semaine',
+                      '$weeklySessions/3 famerenana lesona tamin’ity herinandro ity',
+                    ),
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
+      const SizedBox(height: 16),
+      const LearningContentSection(),
       const SizedBox(height: 28),
       Text(
         appText(context, 'Mes matières', 'Ny taranjako'),
@@ -133,62 +220,183 @@ class _LearningScreenState extends State<LearningScreen> {
         style: Theme.of(context).textTheme.bodySmall,
       ),
       const SizedBox(height: 14),
-      GridView.count(
-        crossAxisCount: 2,
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        mainAxisSpacing: 12,
-        crossAxisSpacing: 12,
-        childAspectRatio: 1.3,
-        children: _subjects
-            .map(
-              (subject) => _SubjectCard(
-                subject: subject,
-                selected: subject == _selectedSubject,
-                onTap: () => setState(() => _selectedSubject = subject),
+      FutureBuilder<List<Map<String, Object?>>>(
+        future: _subjectCatalog,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Text(
+              appText(
+                context,
+                'Impossible de lire les matières synchronisées.',
+                'Tsy afaka mamaky ny taranja nampifandraisina.',
               ),
-            )
-            .toList(),
+            );
+          }
+          final subjects = snapshot.data ?? const [];
+          if (subjects.isEmpty) {
+            return Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Text(
+                  appText(
+                    context,
+                    'Connectez-vous puis synchronisez pour charger les matières officielles de votre série.',
+                    'Midira ary ampifandraiso mba hampidirana ny taranja ofisialy amin’ny sokajinao.',
+                  ),
+                ),
+              ),
+            );
+          }
+          final selectedCode =
+              subjects.any((subject) => subject['code'] == _selectedSubjectCode)
+              ? _selectedSubjectCode!
+              : subjects.first['code']! as String;
+          if (_selectedSubjectCode != selectedCode) {
+            final selected = subjects.firstWhere(
+              (subject) => subject['code'] == selectedCode,
+            );
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (!mounted) return;
+              setState(() {
+                _selectedSubjectCode = selectedCode;
+                _selectedSubjectFrench = selected['name']! as String;
+                _selectedSubjectMalagasy = selected['nameMg']! as String;
+              });
+            });
+          }
+          return GridView.count(
+            crossAxisCount: 2,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            mainAxisSpacing: 12,
+            crossAxisSpacing: 12,
+            childAspectRatio: 1.3,
+            children: subjects.map((subject) {
+              final code = subject['code']! as String;
+              return _SubjectCard(
+                code: code,
+                label: _subjectLabel(context, subject),
+                selected: code == selectedCode,
+                onTap: _startedAt == null
+                    ? () => setState(() {
+                        _selectedSubjectCode = code;
+                        _selectedSubjectFrench = subject['name']! as String;
+                        _selectedSubjectMalagasy = subject['nameMg']! as String;
+                      })
+                    : null,
+              );
+            }).toList(),
+          );
+        },
       ),
       const SizedBox(height: 22),
-      FilledButton.icon(
-        onPressed: _saving ? null : _saveSession,
-        icon: _saving
-            ? const SizedBox(
-                width: 18,
-                height: 18,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  color: Colors.white,
+      Card(
+        child: Padding(
+          padding: const EdgeInsets.all(18),
+          child: Column(
+            children: [
+              Text(
+                appText(
+                  context,
+                  'Une séance à la fois',
+                  'Indray mandeha isaky ny lesona',
                 ),
-              )
-            : const Icon(Icons.check_rounded),
-        label: Text(
-          appText(
-            context,
-            'Enregistrer ma révision de ${localizedSubject(context, _selectedSubject)}',
-            'Hitahiry ny famerenana ${localizedSubject(context, _selectedSubject)}',
+                style: Theme.of(context).textTheme.titleMedium,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                appText(
+                  context,
+                  'Choisissez une matière et lancez une séance. Votre progression est gardée sur cet appareil, même hors ligne.',
+                  'Misafidiana taranja ary atombohy ny famerenana. Voatahiry amin’ity fitaovana ity ny fandrosoanao, na tsy misy Internet aza.',
+                ),
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              const SizedBox(height: 18),
+              Text(
+                _formatDuration(_elapsed),
+                style: Theme.of(context).textTheme.displaySmall
+                    ?.copyWith(fontWeight: FontWeight.w800),
+              ),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton.icon(
+                  onPressed: _saving
+                      ? null
+                      : _startedAt == null
+                      ? _selectedSubjectCode == null
+                            ? null
+                            : _startSession
+                      : _saveSession,
+                  icon: _saving
+                      ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                      : Icon(
+                          _startedAt == null
+                              ? Icons.play_arrow_rounded
+                              : Icons.check_rounded,
+                        ),
+                  label: Text(
+                    appText(
+                      context,
+                      _startedAt == null
+                          ? 'Commencer ${_selectedSubjectLabel()}'
+                          : 'Terminer et enregistrer',
+                      _startedAt == null
+                          ? 'Hanomboka ${_selectedSubjectLabel(malagasy: true)}'
+                          : 'Hamarana sy hitahiry',
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
     ],
   );
+
+  String _formatDuration(Duration duration) {
+    final minutes = duration.inMinutes.toString().padLeft(2, '0');
+    final seconds = (duration.inSeconds % 60).toString().padLeft(2, '0');
+    return '$minutes:$seconds';
+  }
+
+  String _selectedSubjectLabel({bool malagasy = false}) {
+    return malagasy ? _selectedSubjectMalagasy : _selectedSubjectFrench;
+  }
+
+  String _subjectLabel(BuildContext context, Map<String, Object?> subject) =>
+      AppLanguageScope.of(context).language == AppLanguage.malagasy
+      ? subject['nameMg']! as String
+      : subject['name']! as String;
 }
 
 class _SubjectCard extends StatelessWidget {
   const _SubjectCard({
-    required this.subject,
+    required this.code,
+    required this.label,
     required this.selected,
     required this.onTap,
   });
 
-  final String subject;
+  final String code;
+  final String label;
   final bool selected;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    final tint = _subjectColors[subject] ?? MianaraColors.green;
+    final tint = _subjectColors[code] ?? MianaraColors.green;
     return AnimatedContainer(
       duration: const Duration(milliseconds: 180),
       decoration: BoxDecoration(
@@ -211,12 +419,12 @@ class _SubjectCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Icon(
-                  _subjectIcons[subject] ?? Icons.menu_book_rounded,
+                  _subjectIcons[code] ?? Icons.menu_book_rounded,
                   color: selected ? Colors.white : tint,
                   size: 26,
                 ),
                 Text(
-                  localizedSubject(context, subject),
+                  label,
                   style: TextStyle(
                     fontWeight: FontWeight.w800,
                     fontSize: 15,

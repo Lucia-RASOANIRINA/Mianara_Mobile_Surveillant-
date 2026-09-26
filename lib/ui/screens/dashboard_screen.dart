@@ -31,10 +31,12 @@ class DashboardScreen extends StatelessWidget {
     future: Future.wait([
       AppDatabase.instance.loadDossierItems(),
       AppDatabase.instance.loadRevisionSessions(),
+      AppDatabase.instance.loadMobileSubjects(),
     ]),
     builder: (context, snapshot) {
       final items = snapshot.data?[0] ?? <Map<String, Object?>>[];
       final sessions = snapshot.data?[1] ?? <Map<String, Object?>>[];
+      final subjects = snapshot.data?[2] ?? <Map<String, Object?>>[];
       final completeItems = items
           .where((item) => item['is_complete'] == 1)
           .length;
@@ -179,19 +181,22 @@ class DashboardScreen extends StatelessWidget {
                 ),
               )
             else
-              ...sessions.take(3).toList().asMap().entries.map(
-                (entry) => Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: FadeSlideIn(
-                    delay:
-                        _revisionsDelay + Duration(milliseconds: 40 * entry.key),
-                    child: _ActionTile(
-                      icon: Icons.check_circle_rounded,
-                      tint: MianaraColors.green,
-                      tintSoft: MianaraColors.greenSoft,
-                      title: localizedSubject(
-                        context,
-                        entry.value['subject']! as String,
+              ...sessions
+                  .take(3)
+                  .map(
+                    (session) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: _ActionTile(
+                        icon: Icons.check_circle_rounded,
+                        tint: MianaraColors.green,
+                        tintSoft: MianaraColors.greenSoft,
+                        title: _subjectLabel(
+                          context,
+                          session['subject']! as String,
+                          subjects,
+                        ),
+                        subtitle: _formatDate(session['ended_at']! as String),
+                        onTap: () {},
                       ),
                       subtitle: _formatDate(
                         entry.value['ended_at']! as String,
@@ -221,6 +226,19 @@ class DashboardScreen extends StatelessWidget {
     final date = DateTime.parse(value).toLocal();
     return '${date.day.toString().padLeft(2, '0')}/'
         '${date.month.toString().padLeft(2, '0')}/${date.year}';
+  }
+
+  String _subjectLabel(
+    BuildContext context,
+    String code,
+    List<Map<String, Object?>> subjects,
+  ) {
+    final matching = subjects.where((subject) => subject['code'] == code);
+    if (matching.isEmpty) return localizedSubject(context, code);
+    final subject = matching.first;
+    return AppLanguageScope.of(context).language == AppLanguage.malagasy
+        ? subject['nameMg']! as String
+        : subject['name']! as String;
   }
 }
 
@@ -296,43 +314,33 @@ class _HeroCardState extends State<_HeroCard>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        candidate == null
-                            ? appText(
-                                context,
-                                'Votre parcours vers l\'examen',
-                                'Ny dianao mankany amin\'ny fanadinana',
-                              )
-                            : (candidate!.examType == 'Baccalauréat'
-                                  ? appText(context, 'Baccalauréat', 'Bakalaorea')
-                                  : candidate!.examType),
+                        appText(
+                          context,
+                          'Obtenir ton Bacc pas à pas',
+                          'Mahazo ny Bakalaorea tsikelikely',
+                        ),
                         style: Theme.of(context).textTheme.titleMedium
                             ?.copyWith(color: Colors.white),
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        candidate == null
-                            ? appText(
-                                context,
-                                'Dossier, révisions et assistance réunis pour vous accompagner jusqu\'au jour J.',
-                                'Antontan-taratasy, famerenana lesona ary fanampiana miray hanaraka anao hatramin\'ny andro lehibe.',
-                              )
-                            : [
-                                if (candidate!.examSeries.isNotEmpty)
-                                  appText(
-                                    context,
-                                    'Série ${candidate!.examSeries}',
-                                    'Sokajy ${candidate!.examSeries}',
-                                  ),
-                                if (candidate!.examCenter.isNotEmpty)
-                                  candidate!.examCenter,
-                                candidate!.candidateStatus == 'Scolaire'
-                                    ? appText(context, 'Scolaire', 'Mpianatra')
-                                    : appText(
-                                        context,
-                                        'Candidat libre',
-                                        'Mpiadina afaka',
-                                      ),
-                              ].join(' · '),
+                        [
+                          appText(
+                            context,
+                            'Chaque jour compte : avance à ton rythme et rapproche-toi de ton Baccalauréat.',
+                            'Zava-dehibe ny dingana rehetra: mandrosoa araka ny vitanao mba hanakaiky kokoa ny Bakalaorea.',
+                          ),
+                          if (candidate != null &&
+                              candidate!.examSeries.isNotEmpty)
+                            appText(
+                              context,
+                              'Série ${candidate!.examSeries}',
+                              'Sokajy ${candidate!.examSeries}',
+                            ),
+                          if (candidate != null &&
+                              candidate!.examCenter.isNotEmpty)
+                            candidate!.examCenter,
+                        ].join(' · '),
                         style: TextStyle(
                           color: Colors.white.withValues(alpha: 0.85),
                           height: 1.4,
@@ -488,9 +496,8 @@ class _ActionTile extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: Theme.of(
-                      context,
-                    ).textTheme.labelLarge?.copyWith(fontSize: 16),
+                    style: Theme.of(context).textTheme.labelLarge
+                        ?.copyWith(fontSize: 16),
                   ),
                   const SizedBox(height: 2),
                   Text(subtitle, style: Theme.of(context).textTheme.bodySmall),

@@ -71,6 +71,8 @@ flutter:
 
   assets:
     - assets/branding/mianara-symbole.png
+    - assets/branding/mianara-logo-horizontal.png
+    - assets/branding/mianara-logo-horizontal-negatif.png
 
   fonts:
     - family: PlusJakartaSans
