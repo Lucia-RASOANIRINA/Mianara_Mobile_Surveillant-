@@ -1,0 +1,467 @@
+{
+ "name": "Mianara",
+ "version": 1,
+ "color": {
+  "themes": [
+   {
+    "id": "light",
+    "name": "Clair"
+   },
+   {
+    "id": "dark",
+    "name": "Sombre"
+   }
+  ],
+  "tokens": [
+   {
+    "name": "surface",
+    "value": {
+     "light": "#F8F6F1",
+     "dark": "#0F1A16"
+    },
+    "usage": "Fond de page « papier » (crème chaud en clair, vert nuit en sombre)."
+   },
+   {
+    "name": "surface-raised",
+    "value": {
+     "light": "#FFFFFF",
+     "dark": "#16241F"
+    },
+    "usage": "Cartes, modales, champs de saisie, menus."
+   },
+   {
+    "name": "surface-sunken",
+    "value": {
+     "light": "#EFEBE3",
+     "dark": "#0B1411"
+    },
+    "usage": "Zones en retrait : barre latérale, tableaux alternés, fond de l'écran de scan au repos."
+   },
+   {
+    "name": "line",
+    "value": {
+     "light": "#DCE3DE",
+     "dark": "#2A3A33"
+    },
+    "usage": "Filets et séparateurs décoratifs uniquement (contraste non requis)."
+   },
+   {
+    "name": "line-strong",
+    "value": {
+     "light": "#7A8B83",
+     "dark": "#6B7F76"
+    },
+    "usage": "Bordures des champs, cases à cocher, contrôles : ≥ 3:1 sur surface et surface-raised."
+   },
+   {
+    "name": "ink",
+    "value": {
+     "light": "#12241D",
+     "dark": "#EEF3EF"
+    },
+    "usage": "Texte principal, sur surface, surface-raised, surface-sunken et soleil (15:1 en clair)."
+   },
+   {
+    "name": "ink-muted",
+    "value": {
+     "light": "#4F5E57",
+     "dark": "#A7B5AE"
+    },
+    "usage": "Texte secondaire, métadonnées, aides de champ ; ≥ 6:1 sur surface et surface-raised dans les deux thèmes."
+   },
+   {
+    "name": "vert-ravinala",
+    "value": {
+     "light": "#0E6B4F",
+     "dark": "#4CC08F"
+    },
+    "usage": "Couleur principale de la marque : bouton principal, liens, état actif, symbole. Texte vert sur surface ou vert-ravinala-soft (≥ 5,5:1)."
+   },
+   {
+    "name": "vert-ravinala-hover",
+    "value": {
+     "light": "#0A4A37",
+     "dark": "#7AD3AC"
+    },
+    "usage": "Survol et appui du bouton principal."
+   },
+   {
+    "name": "vert-ravinala-soft",
+    "value": {
+     "light": "#E6F2EC",
+     "dark": "#123A2C"
+    },
+    "usage": "Fonds teintés derrière du texte vert-ravinala : bandeaux, sélection, badge « Admis »."
+   },
+   {
+    "name": "on-vert",
+    "value": {
+     "light": "#FFFFFF",
+     "dark": "#0F1A16"
+    },
+    "usage": "Texte et icônes posés sur un aplat vert-ravinala (libellé du bouton principal)."
+   },
+   {
+    "name": "tany-mena",
+    "value": {
+     "light": "#C2492B",
+     "dark": "#F08A6C"
+    },
+    "usage": "Terre rouge : accent de marque (livre du symbole, illustrations, titres de section de Mianara Learn). Jamais pour une erreur. Texte seulement ≥ 18px gras sur surface-raised."
+   },
+   {
+    "name": "tany-mena-soft",
+    "value": {
+     "light": "#FBEAE4",
+     "dark": "#3A1D14"
+    },
+    "usage": "Fond teinté des encarts éditoriaux et cartes de mission du jeu."
+   },
+   {
+    "name": "soleil",
+    "value": {
+     "light": "#F2B33D",
+     "dark": "#F5C35F"
+    },
+    "usage": "Soleil : récompenses, XP, étoiles, surlignage, repères de scan. Toujours avec texte ink par-dessus, jamais en texte sur fond clair."
+   },
+   {
+    "name": "soleil-soft",
+    "value": {
+     "light": "#FEF4DC",
+     "dark": "#3A2C0E"
+    },
+    "usage": "Fond des astuces et des encarts « À savoir »."
+   },
+   {
+    "name": "success",
+    "value": {
+     "light": "#0E6B4F",
+     "dark": "#4CC08F"
+    },
+    "usage": "Succès : Admis, Présent, paiement vérifié, écran de scan validé (aplat + on-success)."
+   },
+   {
+    "name": "success-soft",
+    "value": {
+     "light": "#E6F2EC",
+     "dark": "#123A2C"
+    },
+    "usage": "Fond des badges et alertes de succès, sous du texte success."
+   },
+   {
+    "name": "on-success",
+    "value": {
+     "light": "#FFFFFF",
+     "dark": "#0F1A16"
+    },
+    "usage": "Texte sur un aplat success (écran « Présent » de Mianara Scan)."
+   },
+   {
+    "name": "danger",
+    "value": {
+     "light": "#B42318",
+     "dark": "#F97066"
+    },
+    "usage": "Erreur, Fraude, scan refusé, liste noire. Toujours accompagné d'une icône et d'un mot, jamais de la couleur seule."
+   },
+   {
+    "name": "danger-soft",
+    "value": {
+     "light": "#FDECEA",
+     "dark": "#3A1614"
+    },
+    "usage": "Fond des alertes et badges d'erreur, sous du texte danger."
+   },
+   {
+    "name": "on-danger",
+    "value": {
+     "light": "#FFFFFF",
+     "dark": "#0F1A16"
+    },
+    "usage": "Texte sur un aplat danger (écran « Refusé » de Mianara Scan)."
+   },
+   {
+    "name": "warning",
+    "value": {
+     "light": "#8A5A00",
+     "dark": "#F5C35F"
+    },
+    "usage": "Texte d'avertissement : En attente, Ajourné, synchronisation en cours ; sur warning-soft ou surface."
+   },
+   {
+    "name": "warning-soft",
+    "value": {
+     "light": "#FEF4DC",
+     "dark": "#3A2C0E"
+    },
+    "usage": "Fond des badges et alertes d'avertissement."
+   },
+   {
+    "name": "info",
+    "value": {
+     "light": "#1D5FA8",
+     "dark": "#7DB4F0"
+    },
+    "usage": "Information neutre : actualités, statut « Date de retrait fixée »."
+   },
+   {
+    "name": "info-soft",
+    "value": {
+     "light": "#E8F0FA",
+     "dark": "#12263D"
+    },
+    "usage": "Fond des badges et alertes d'information."
+   },
+   {
+    "name": "focus-ring",
+    "value": {
+     "light": "#1D5FA8",
+     "dark": "#7DB4F0"
+    },
+    "usage": "Anneau de focus clavier : 2px, décalé de 2px, sur tous les contrôles."
+   },
+   {
+    "name": "link",
+    "value": "{vert-ravinala}",
+    "usage": "Liens : alias de vert-ravinala, toujours soulignés dans le texte courant."
+   }
+  ]
+ },
+ "type": {
+  "fonts": [
+   {
+    "family": "Plus Jakarta Sans",
+    "file": "fonts/PlusJakartaSans-Variable.woff2",
+    "weight": "200 800",
+    "style": "normal"
+   },
+   {
+    "family": "JetBrains Mono",
+    "file": "fonts/JetBrainsMono-Variable.woff2",
+    "weight": "100 800",
+    "style": "normal"
+   }
+  ],
+  "families": {
+   "sans": "\"Plus Jakarta Sans\", system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+   "mono": "\"JetBrains Mono\", ui-monospace, Menlo, Consolas, monospace"
+  },
+  "groups": [
+   {
+    "name": "Titres",
+    "family": "sans",
+    "styles": [
+     {
+      "name": "display",
+      "fontSize": "48px",
+      "lineHeight": "56px",
+      "fontWeight": 800,
+      "letterSpacing": "-0.02em",
+      "sample": "Tongasoa eto amin'i Mianara",
+      "usage": "Accueil public, écran de résultats, écrans de victoire du jeu."
+     },
+     {
+      "name": "h1",
+      "fontSize": "32px",
+      "lineHeight": "40px",
+      "fontWeight": 800,
+      "letterSpacing": "-0.01em",
+      "sample": "Mes demandes de documents",
+      "usage": "Titre de page (un par page)."
+     },
+     {
+      "name": "h2",
+      "fontSize": "24px",
+      "lineHeight": "32px",
+      "fontWeight": 700,
+      "sample": "Emploi du temps — Série S",
+      "usage": "Titre de section."
+     },
+     {
+      "name": "h3",
+      "fontSize": "18px",
+      "lineHeight": "26px",
+      "fontWeight": 700,
+      "sample": "Relevé de notes",
+      "usage": "Titre de carte, de bloc."
+     }
+    ]
+   },
+   {
+    "name": "Texte",
+    "family": "sans",
+    "styles": [
+     {
+      "name": "body-lg",
+      "fontSize": "18px",
+      "lineHeight": "28px",
+      "fontWeight": 400,
+      "sample": "Votre convocation est prête à être téléchargée.",
+      "usage": "Texte d'introduction ; texte courant de Mianara Scan (lecture en plein soleil)."
+     },
+     {
+      "name": "body",
+      "fontSize": "16px",
+      "lineHeight": "24px",
+      "fontWeight": 400,
+      "sample": "Présentez-vous au centre 30 minutes avant le début de l'épreuve.",
+      "usage": "Texte courant web et mobile. Jamais en dessous de 16px sur mobile."
+     },
+     {
+      "name": "body-sm",
+      "fontSize": "14px",
+      "lineHeight": "20px",
+      "fontWeight": 400,
+      "sample": "Dernière synchronisation il y a 2 minutes",
+      "usage": "Métadonnées, aides de champ, tableaux denses (web uniquement)."
+     },
+     {
+      "name": "label",
+      "fontSize": "14px",
+      "lineHeight": "20px",
+      "fontWeight": 600,
+      "sample": "Mot de passe",
+      "usage": "Libellés de champs, boutons, onglets."
+     },
+     {
+      "name": "overline",
+      "fontSize": "12px",
+      "lineHeight": "16px",
+      "fontWeight": 700,
+      "letterSpacing": "0.08em",
+      "sample": "SESSION 2026",
+      "usage": "Surtitres en capitales, courts (≤ 3 mots)."
+     }
+    ]
+   },
+   {
+    "name": "Codes",
+    "family": "mono",
+    "styles": [
+     {
+      "name": "matricule",
+      "fontSize": "16px",
+      "lineHeight": "24px",
+      "fontWeight": 600,
+      "letterSpacing": "0.02em",
+      "sample": "BAC2026-S-04587",
+      "usage": "Matricules, références de paiement, numéros de ticket et de diplôme : chiffres à chasse fixe, 0 et O distincts."
+     }
+    ]
+   }
+  ]
+ },
+ "spacing": {
+  "tokens": [
+   {
+    "name": "space-1",
+    "value": "4px",
+    "usage": "Écart icône–texte."
+   },
+   {
+    "name": "space-2",
+    "value": "8px",
+    "usage": "Écart entre éléments serrés, padding vertical des badges."
+   },
+   {
+    "name": "space-3",
+    "value": "12px",
+    "usage": "Padding vertical des boutons et champs."
+   },
+   {
+    "name": "space-4",
+    "value": "16px",
+    "usage": "Padding des cartes sur mobile, marges latérales mobiles."
+   },
+   {
+    "name": "space-5",
+    "value": "24px",
+    "usage": "Padding des cartes sur web, écart entre blocs."
+   },
+   {
+    "name": "space-6",
+    "value": "32px",
+    "usage": "Écart entre sections."
+   },
+   {
+    "name": "space-7",
+    "value": "48px",
+    "usage": "Hauteur minimale d'une zone tactile ; grandes respirations."
+   },
+   {
+    "name": "space-8",
+    "value": "64px",
+    "usage": "Boutons d'action de Mianara Scan ; marges des pages publiques."
+   }
+  ]
+ },
+ "radius": {
+  "tokens": [
+   {
+    "name": "radius-sm",
+    "value": "6px",
+    "usage": "Badges, cases, petits éléments."
+   },
+   {
+    "name": "radius-md",
+    "value": "10px",
+    "usage": "Boutons, champs de saisie."
+   },
+   {
+    "name": "radius-lg",
+    "value": "16px",
+    "usage": "Cartes, modales, convocation."
+   },
+   {
+    "name": "radius-xl",
+    "value": "24px",
+    "usage": "Grandes cartes de Mianara Learn, feuilles mobiles (bottom sheets)."
+   },
+   {
+    "name": "radius-pill",
+    "value": "999px",
+    "usage": "Pastilles, barres d'XP, filtres. Rappelle les feuilles du ravinala."
+   }
+  ]
+ },
+ "shadow": {
+  "tokens": [
+   {
+    "name": "shadow-sm",
+    "value": {
+     "light": "0 1px 2px rgba(18,36,29,0.08)",
+     "dark": "0 1px 2px rgba(0,0,0,0.4)"
+    },
+    "usage": "Cartes au repos."
+   },
+   {
+    "name": "shadow-md",
+    "value": {
+     "light": "0 6px 20px rgba(18,36,29,0.12)",
+     "dark": "0 6px 20px rgba(0,0,0,0.5)"
+    },
+    "usage": "Modales, menus, cartes survolées."
+   }
+  ]
+ },
+ "size": {
+  "tokens": [
+   {
+    "name": "tap-min",
+    "value": "48px",
+    "usage": "Taille minimale de toute zone tactile (web mobile, Learn)."
+   },
+   {
+    "name": "tap-scan",
+    "value": "64px",
+    "usage": "Hauteur des boutons d'action de Mianara Scan (utilisés debout, vite, parfois en plein soleil)."
+   },
+   {
+    "name": "content-max",
+    "value": "1200px",
+    "usage": "Largeur maximale du contenu web."
+   }
+  ]
+ }
+}

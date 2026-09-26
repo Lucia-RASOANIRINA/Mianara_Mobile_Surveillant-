@@ -1,0 +1,10 @@
+MIANARA — CHARTE GRAPHIQUE v1.0 (septembre 2026)
+
+Mianara-Charte-graphique.pdf   Charte complète : contexte, cibles, logo, couleurs, typographie, iconographie, ton, déclinaisons
+Logos/SVG et Logos/PNG          Logo horizontal, vertical, symbole, négatif, monochrome
+Icones-app/                     Icônes Mianara (web), Mianara Scan, Mianara Learn : 1024, 512, 192, 48 px + favicon 32 px
+Motifs/motif-lamba.svg          Bandeau de rayures inspiré du lamba
+Polices/                        Plus Jakarta Sans et JetBrains Mono (licence SIL OFL, libres) en TTF et WOFF2
+tokens-couleurs-typo.json       Couleurs (thèmes clair et sombre), tailles de texte, espacements, rayons
+
+Couleurs principales : vert ravinala #0E6B4F · terre rouge #C2492B · soleil #F2B33D · encre #12241D · papier #F8F6F1
