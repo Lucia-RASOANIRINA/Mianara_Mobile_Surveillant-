@@ -106,6 +106,20 @@ class _AssistantScreenState extends State<AssistantScreen> {
         'Je peux déjà répondre en malagasy, comme maintenant. L’explication des cours dans les deux langues arrivera avec le module pédagogique.',
         'Afaka mamaly amin’ny teny malagasy toy izao aho. Ho tonga miaraka amin’ny sehatra fanabeazana ny fanazavan-desona amin’ny fiteny roa.',
       );
+    } else if (has([
+      'orientation',
+      'après le bac',
+      'apres le bac',
+      'concours',
+      'fonction publique',
+      'université',
+      'universite',
+      'école publique',
+      'ecole publique',
+      'taorian',
+      'fifaninanana',
+    ])) {
+      answer = _orientationAnswer(context);
     } else {
       answer = appText(
         context,
@@ -188,6 +202,36 @@ class _AssistantScreenState extends State<AssistantScreen> {
       context,
       'Votre centre d’examen enregistré est : $center. L’itinéraire et les horaires seront ajoutés une fois la plateforme connectée aux données officielles.',
       'Ny foibem-panadinana voarakitra ao aminao dia: $center. Hampidirina ny lalana sy ny ora rehefa mifandray amin’ny angona ofisialy ny sehatra.',
+    );
+  }
+
+  String _orientationAnswer(BuildContext context) {
+    final series = widget.candidate?.examSeries ?? '';
+    String tip = '';
+    if (['S', 'C', 'D'].contains(series)) {
+      tip = appText(
+        context,
+        ' Avec une série scientifique, les concours à dominante scientifique, technique ou de santé sont souvent accessibles.',
+        ' Amin’ny sokajy siantifika, matetika azo idirana ny fifaninanana miompana amin’ny siansa, ny teknika na ny fahasalamana.',
+      );
+    } else if (series == 'OSE') {
+      tip = appText(
+        context,
+        ' Avec la série OSE, les concours à dominante économique, gestion ou administrative sont souvent accessibles.',
+        ' Amin’ny sokajy OSE, matetika azo idirana ny fifaninanana miompana amin’ny toekarena, ny fitantanana na ny fitantanam-panjakana.',
+      );
+    } else if (['L', 'A'].contains(series)) {
+      tip = appText(
+        context,
+        ' Avec une série littéraire, les concours à dominante littéraire, juridique ou administrative sont souvent accessibles.',
+        ' Amin’ny sokajy haisoratra, matetika azo idirana ny fifaninanana miompana amin’ny haisoratra, ny lalàna na ny fitantanam-panjakana.',
+      );
+    }
+
+    return appText(
+      context,
+      'La plupart des concours de la fonction publique malgache demandent le Baccalauréat comme diplôme minimum ; ils sont organisés par le Ministère de la Fonction Publique avec des comités par secteur selon le ministère concerné. Quelques exemples accessibles dès le bac : écoles militaires ou de police, École Nationale de l’Enseignement Maritime, instituts universitaires publics recrutant sur concours. Attention : certaines grandes écoles comme l’ENAM demandent un niveau bac+4, pas un accès direct après le bac.$tip Les dates d’ouverture changent souvent — les concours ont par exemple été suspendus en 2025 pour être réorganisés — donc vérifiez toujours l’annonce officielle du ministère concerné avant de vous engager. Je peux vous expliquer les possibilités, mais le choix final vous appartient.',
+      'Ny ankamaroan’ny fifaninanana ho amin’ny fanompoana miankina amin’ny fanjakana dia mangataka ny Bakalaorea ho mari-pahaizana farany ambany; ny Ministeran’ny Fanompoana Miankina amin’ny Fanjakana no mandrindra izany, miaraka amin’ny vaomiera isaky ny sehatra. Ohatra vitsivitsy azo idirana avy hatrany aorian’ny bakalaorea: sekoly miaramila na polisy, Sekoly Ambony Miompana amin’ny Ranomasina (ENEM), oniversite miankina amin’ny fanjakana mandray mpianatra amin’ny alalan’ny fifaninanana. Mila mitandrina: misy sekoly ambony toa ny ENAM mangataka fari-pahaizana bac+4, tsy azo idirana avy hatrany aorian’ny bakalaorea.$tip Miova matetika ny daty fanokafana — natsahatra vonjimaika mihitsy aza ny fifaninanana tamin’ny 2025 mba hohavaozina — koa jereo foana ny fanambarana ofisialin’ny ministera voakasika alohan’ny hisoratra anarana. Afaka manazava ny safidy misy aho, fa ianao ihany no manapa-kevitra farany.',
     );
   }
 
@@ -278,6 +322,20 @@ class _AssistantScreenState extends State<AssistantScreen> {
                     context,
                     'Quel est mon centre d’examen ?',
                     'Aiza ny foibem-panadinako?',
+                  ),
+                ),
+              ),
+              _SuggestionChip(
+                label: appText(
+                  context,
+                  'Quels concours publics après le bac ?',
+                  'Inona ny fifaninanana miankina amin’ny fanjakana aorian’ny bakalaorea?',
+                ),
+                onTap: () => _send(
+                  appText(
+                    context,
+                    'Quels concours publics après le bac ?',
+                    'Inona ny fifaninanana miankina amin’ny fanjakana aorian’ny bakalaorea?',
                   ),
                 ),
               ),

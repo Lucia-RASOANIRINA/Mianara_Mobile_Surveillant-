@@ -4,6 +4,13 @@ import '../../data/app_database.dart';
 import '../../models/candidate.dart';
 import '../app_language.dart';
 import '../theme.dart';
+import '../widgets/fade_slide_in.dart';
+
+const _heroDelay = Duration.zero;
+const _promptDelay = Duration(milliseconds: 60);
+const _metricsDelay = Duration(milliseconds: 120);
+const _parcoursDelay = Duration(milliseconds: 180);
+const _revisionsDelay = Duration(milliseconds: 240);
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({
@@ -53,114 +60,147 @@ class DashboardScreen extends StatelessWidget {
               style: Theme.of(context).textTheme.headlineMedium,
             ),
             const SizedBox(height: 18),
-            _HeroCard(candidate: candidate),
+            FadeSlideIn(
+              delay: _heroDelay,
+              child: _HeroCard(candidate: candidate),
+            ),
             const SizedBox(height: 18),
-            if (candidate == null) _ProfilePrompt(onTap: onOpenProfile),
+            if (candidate == null)
+              FadeSlideIn(
+                delay: _promptDelay,
+                child: _ProfilePrompt(onTap: onOpenProfile),
+              ),
             if (candidate == null) const SizedBox(height: 18),
-            Row(
-              children: [
-                Expanded(
-                  child: _MetricCard(
-                    label: appText(
-                      context,
-                      'Pièces prêtes',
-                      'Antontan-taratasy vonona',
+            FadeSlideIn(
+              delay: _metricsDelay,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: _MetricCard(
+                      label: appText(
+                        context,
+                        'Pièces prêtes',
+                        'Antontan-taratasy vonona',
+                      ),
+                      value: '$completeItems/${items.length}',
+                      icon: Icons.folder_open_rounded,
+                      tint: MianaraColors.green,
+                      tintSoft: MianaraColors.greenSoft,
                     ),
-                    value: '$completeItems/${items.length}',
-                    icon: Icons.folder_open_rounded,
-                    tint: MianaraColors.green,
-                    tintSoft: MianaraColors.greenSoft,
                   ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _MetricCard(
-                    label: appText(context, 'Révisions', 'Famerenana lesona'),
-                    value: '${sessions.length}',
-                    icon: Icons.auto_stories_rounded,
-                    tint: MianaraColors.red,
-                    tintSoft: MianaraColors.redSoft,
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _MetricCard(
+                      label: appText(
+                        context,
+                        'Révisions',
+                        'Famerenana lesona',
+                      ),
+                      value: '${sessions.length}',
+                      icon: Icons.auto_stories_rounded,
+                      tint: MianaraColors.red,
+                      tintSoft: MianaraColors.redSoft,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
             const SizedBox(height: 28),
-            Text(
-              appText(context, 'Votre parcours', 'Ny lalanao'),
-              style: Theme.of(context).textTheme.titleLarge,
+            FadeSlideIn(
+              delay: _parcoursDelay,
+              child: Text(
+                appText(context, 'Votre parcours', 'Ny lalanao'),
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
             ),
             const SizedBox(height: 12),
-            _ActionTile(
-              icon: Icons.folder_copy_rounded,
-              tint: MianaraColors.green,
-              tintSoft: MianaraColors.greenSoft,
-              title: appText(
-                context,
-                'Suivre mon dossier',
-                'Hanaraka ny antontan-taratasiko',
+            FadeSlideIn(
+              delay: _parcoursDelay,
+              child: _ActionTile(
+                icon: Icons.folder_copy_rounded,
+                tint: MianaraColors.green,
+                tintSoft: MianaraColors.greenSoft,
+                title: appText(
+                  context,
+                  'Suivre mon dossier',
+                  'Hanaraka ny antontan-taratasiko',
+                ),
+                subtitle: appText(
+                  context,
+                  'Checklist et état des pièces',
+                  'Lisitra sy satan’ny antontan-taratasy',
+                ),
+                onTap: onOpenDossier,
               ),
-              subtitle: appText(
-                context,
-                'Checklist et état des pièces',
-                'Lisitra sy satan’ny antontan-taratasy',
-              ),
-              onTap: onOpenDossier,
             ),
             const SizedBox(height: 10),
-            _ActionTile(
-              icon: Icons.person_rounded,
-              tint: MianaraColors.sun,
-              tintSoft: MianaraColors.sunSoft,
-              title: appText(
-                context,
-                'Compléter mon profil',
-                'Hameno ny mombamomba ahy',
+            FadeSlideIn(
+              delay: _parcoursDelay,
+              child: _ActionTile(
+                icon: Icons.person_rounded,
+                tint: MianaraColors.sun,
+                tintSoft: MianaraColors.sunSoft,
+                title: appText(
+                  context,
+                  'Compléter mon profil',
+                  'Hameno ny mombamomba ahy',
+                ),
+                subtitle: appText(
+                  context,
+                  'Informations candidat et examen',
+                  'Mombamomba ny mpiadina sy ny fanadinana',
+                ),
+                onTap: onOpenProfile,
               ),
-              subtitle: appText(
-                context,
-                'Informations candidat et examen',
-                'Mombamomba ny mpiadina sy ny fanadinana',
-              ),
-              onTap: onOpenProfile,
             ),
             const SizedBox(height: 26),
-            Text(
-              appText(
-                context,
-                'Dernières révisions',
-                'Famerenana lesona farany',
+            FadeSlideIn(
+              delay: _revisionsDelay,
+              child: Text(
+                appText(
+                  context,
+                  'Dernières révisions',
+                  'Famerenana lesona farany',
+                ),
+                style: Theme.of(context).textTheme.titleLarge,
               ),
-              style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 12),
             if (sessions.isEmpty)
-              _EmptyCard(
-                icon: Icons.menu_book_outlined,
-                text: appText(
-                  context,
-                  'Vos sessions de révision apparaîtront ici.',
-                  'Hiseho eto ny famerenana lesona nataonao.',
+              FadeSlideIn(
+                delay: _revisionsDelay,
+                child: _EmptyCard(
+                  icon: Icons.menu_book_outlined,
+                  text: appText(
+                    context,
+                    'Vos sessions de révision apparaîtront ici.',
+                    'Hiseho eto ny famerenana lesona nataonao.',
+                  ),
                 ),
               )
             else
-              ...sessions
-                  .take(3)
-                  .map(
-                    (session) => Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
-                      child: _ActionTile(
-                        icon: Icons.check_circle_rounded,
-                        tint: MianaraColors.green,
-                        tintSoft: MianaraColors.greenSoft,
-                        title: localizedSubject(
-                          context,
-                          session['subject']! as String,
-                        ),
-                        subtitle: _formatDate(session['ended_at']! as String),
-                        onTap: () {},
+              ...sessions.take(3).toList().asMap().entries.map(
+                (entry) => Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: FadeSlideIn(
+                    delay:
+                        _revisionsDelay + Duration(milliseconds: 40 * entry.key),
+                    child: _ActionTile(
+                      icon: Icons.check_circle_rounded,
+                      tint: MianaraColors.green,
+                      tintSoft: MianaraColors.greenSoft,
+                      title: localizedSubject(
+                        context,
+                        entry.value['subject']! as String,
                       ),
+                      subtitle: _formatDate(
+                        entry.value['ended_at']! as String,
+                      ),
+                      onTap: () {},
                     ),
                   ),
+                ),
+              ),
           ],
         ),
       );
@@ -184,10 +224,29 @@ class DashboardScreen extends StatelessWidget {
   }
 }
 
-class _HeroCard extends StatelessWidget {
+class _HeroCard extends StatefulWidget {
   const _HeroCard({required this.candidate});
 
   final Candidate? candidate;
+
+  @override
+  State<_HeroCard> createState() => _HeroCardState();
+}
+
+class _HeroCardState extends State<_HeroCard>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: const Duration(seconds: 3),
+  )..repeat(reverse: true);
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  Candidate? get candidate => widget.candidate;
 
   @override
   Widget build(BuildContext context) {
@@ -202,10 +261,17 @@ class _HeroCard extends StatelessWidget {
           Positioned(
             right: -18,
             top: -18,
-            child: Icon(
-              Icons.eco_rounded,
-              size: 120,
-              color: Colors.white.withValues(alpha: 0.08),
+            child: AnimatedBuilder(
+              animation: _controller,
+              builder: (context, child) => Transform.scale(
+                scale: 1 + _controller.value * 0.08,
+                child: child,
+              ),
+              child: Icon(
+                Icons.eco_rounded,
+                size: 120,
+                color: Colors.white.withValues(alpha: 0.08),
+              ),
             ),
           ),
           Padding(
@@ -233,8 +299,8 @@ class _HeroCard extends StatelessWidget {
                         candidate == null
                             ? appText(
                                 context,
-                                'Votre espace, même hors ligne',
-                                'Ny toerana ampiasainao, na tsy misy Internet aza',
+                                'Votre parcours vers l\'examen',
+                                'Ny dianao mankany amin\'ny fanadinana',
                               )
                             : (candidate!.examType == 'Baccalauréat'
                                   ? appText(context, 'Baccalauréat', 'Bakalaorea')
@@ -247,8 +313,8 @@ class _HeroCard extends StatelessWidget {
                         candidate == null
                             ? appText(
                                 context,
-                                'Profil, dossier et révisions sont enregistrés sur cet appareil.',
-                                'Voatahiry amin’ity fitaovana ity ny mombamomba anao, ny antontan-taratasy ary ny famerenana lesona.',
+                                'Dossier, révisions et assistance réunis pour vous accompagner jusqu\'au jour J.',
+                                'Antontan-taratasy, famerenana lesona ary fanampiana miray hanaraka anao hatramin\'ny andro lehibe.',
                               )
                             : [
                                 if (candidate!.examSeries.isNotEmpty)

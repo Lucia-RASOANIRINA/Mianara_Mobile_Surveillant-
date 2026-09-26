@@ -1,0 +1,13 @@
+# Dépendances et builds
+/node_modules
+/.next/
+/out/
+next-env.d.ts
+
+# Secrets — ne jamais committer une valeur remplie
+.env*
+!.env.example
+
+# Divers
+.DS_Store
+*.log

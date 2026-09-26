@@ -38,6 +38,7 @@ dependencies:
   workmanager: ^0.10.10
   sqflite_sqlcipher: ^3.4.1
   flutter_secure_storage: ^11.2.0
+  http: ^1.2.2
 
 dev_dependencies:
   flutter_test:
@@ -49,6 +50,16 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.3
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  remove_alpha_ios: true
+  image_path: "assets/branding/mianara-icon-foreground.png"
+  image_path_ios: "assets/branding/mianara-icon-flat.png"
+  adaptive_icon_background: "#F8F6F1"
+  adaptive_icon_foreground: "assets/branding/mianara-icon-foreground.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

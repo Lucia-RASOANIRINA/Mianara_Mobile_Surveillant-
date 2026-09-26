@@ -20,7 +20,7 @@ class _CandidateFormState extends State<CandidateForm> {
   final _formKey = GlobalKey<FormState>();
   final _controllers = <String, TextEditingController>{};
   String _examType = 'Baccalauréat';
-  String _series = 'C';
+  String _series = 'S';
   String _status = 'Scolaire';
   String _gender = '';
   String _language = 'Français';
@@ -71,7 +71,9 @@ class _CandidateFormState extends State<CandidateForm> {
           candidate.birthCertificateNumber;
       _controllers['examCenter']!.text = candidate.examCenter;
       _examType = candidate.examType;
-      _series = candidate.examSeries.isEmpty ? 'C' : candidate.examSeries;
+      _series = ['L', 'S', 'OSE'].contains(candidate.examSeries)
+          ? candidate.examSeries
+          : 'S';
       _status = candidate.candidateStatus;
       _gender = candidate.gender;
       _language = candidate.preferredLanguage;
@@ -214,9 +216,18 @@ class _CandidateFormState extends State<CandidateForm> {
                     labelText: appText(context, 'Série', 'Sokajy'),
                   ),
                   items: const [
-                    DropdownMenuItem(value: 'A', child: Text('A')),
-                    DropdownMenuItem(value: 'C', child: Text('C')),
-                    DropdownMenuItem(value: 'D', child: Text('D')),
+                    DropdownMenuItem(
+                      value: 'L',
+                      child: Text('L — Littéraire'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'S',
+                      child: Text('S — Scientifique'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'OSE',
+                      child: Text('OSE — Organisation, Société et Économie'),
+                    ),
                   ],
                   onChanged: (value) =>
                       setState(() => _series = value ?? _series),

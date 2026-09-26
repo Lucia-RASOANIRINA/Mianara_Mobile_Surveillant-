@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Debug uniquement : autorise le HTTP en clair vers l'hôte de développement
+  local (`backend/`, lancé avec `npm run dev`), jamais vers un domaine
+  arbitraire. 10.0.2.2 est l'alias que l'émulateur Android utilise pour
+  joindre le localhost de la machine hôte ; 10.0.3.2 est l'équivalent pour
+  Genymotion.
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false" />
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="false">10.0.2.2</domain>
+        <domain includeSubdomains="false">10.0.3.2</domain>
+        <domain includeSubdomains="false">localhost</domain>
+        <domain includeSubdomains="false">127.0.0.1</domain>
+    </domain-config>
+</network-security-config>

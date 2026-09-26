@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Configuration par défaut (builds release et profile) : HTTPS uniquement,
+  comme le comportement natif d'Android pour une cible API 28+. La variante
+  debug (src/debug/res/xml/network_security_config.xml) autorise en plus le
+  HTTP en clair vers l'hôte de développement local.
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false" />
+</network-security-config>
